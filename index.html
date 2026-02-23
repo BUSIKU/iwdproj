@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartGear | Premium Zambian Tech Store</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --bg: #0d0d0f;
+            --surface: #1a1a1e;
+            --text: #ffffff;
+            --accent: #ffcc00;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(13, 13, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: #fff; }
+        .logo span { color: var(--primary); }
+
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+
+        .currency-btn {
+            background: #222;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .cart-trigger {
+            background: #222;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .container { flex: 1; padding: 20px 5%; max-width: 1200px; margin: 0 auto; width: 90%; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #222;
+            transition: 0.3s;
+        }
+
+        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
+
+        .card img {
+            width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px;
+        }
+
+        .price-tag { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
+
+        .btn {
+            width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer;
+        }
+
+        .btn-primary { background: var(--primary); color: #000; }
+
+        /* Sidebar Cart */
+        #sidebar {
+            position: fixed; right: -100%; top: 0; width: 360px; height: 100%;
+            background: #111; z-index: 2000; transition: 0.4s; padding: 30px; box-sizing: border-box;
+        }
+
+        #sidebar.open { right: 0; }
+
+        .momo-box { background: #1a1a1e; border: 1px solid #333; border-radius: 15px; padding: 15px; margin-top: 20px; }
+
+        .net-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+
+        .net-opt { text-align: center; font-size: 0.7rem; cursor: pointer; padding: 10px; border: 1px solid #333; border-radius: 10px; }
+
+        .net-opt.active { border-color: var(--accent); color: var(--accent); }
+
+        footer {
+            background: #000; padding: 30px 5%; text-align: center; border-top: 1px solid #222; color: #666; font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="#" class="logo">Smart<span>Gear</span></a>
+    <div class="header-actions">
+        <button class="currency-btn" onclick="toggleCurrency()">Switch to <span id="alt-curr">ZMW</span></button>
+        <div class="cart-trigger" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="grid" id="productGrid"></div>
+</div>
+
+<div id="sidebar">
+    <span style="cursor:pointer; float:right;" onclick="toggleCart()">&times; Close</span>
+    <h2>Your Bag</h2>
+    <div id="cartItems"></div>
+    <hr style="border-color: #333; margin: 20px 0;">
+    
+    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; color: var(--primary);">
+        <span>Total</span>
+        <span id="cart-total">$0.00</span>
+    </div>
+
+    <div class="momo-box">
+        <p style="margin:0; font-size: 0.8rem;">Mobile Money Payment (Zambia)</p>
+        <div class="net-grid">
+            <div class="net-opt" onclick="setNet('MTN', this)">MTN</div>
+            <div class="net-opt" onclick="setNet('Airtel', this)">Airtel</div>
+            <div class="net-opt" onclick="setNet('Zamtel', this)">Zamtel</div>
+        </div>
+        <input type="text" id="momo-phone" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid #444; border-radius:8px;" placeholder="09x xxxxxxx">
+    </div>
+
+    <button class="btn btn-primary" style="margin-top: 20px;" onclick="processPayment()">Confirm & Pay</button>
+</div>
+
+<footer>
+    &copy; 2026 Designed and Developed by <strong>Busiku Kapikanya</strong> | SIN: 1810198443
+</footer>
+
+<script>
+    const products = [
+        { id: 1, name: 'Nano 65W Fast Charger', price: 45, img: 'https://images.unsplash.com/photo-1619441207978-3d326c46e2c9?w=400' },
+        { id: 2, name: 'Smart Noise Buds Pro', price: 120, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400' },
+        { id: 3, name: 'Armor Carbon Case', price: 25, img: 'https://images.unsplash.com/photo-1603313011101-31c726a54861?w=400' },
+        { id: 4, name: 'Mag-Safe PowerBank', price: 65, img: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400' }
+    ];
+
+    let cart = [];
+    let currentCurrency = 'USD'; // or 'ZMW'
+    const rate = 26.8; 
+    let selectedNet = '';
+
+    function formatPrice(amt) {
+        if (currentCurrency === 'ZMW') {
+            return 'K' + (amt * rate).toLocaleString(undefined, {minimumFractionDigits: 2});
+        }
+        return '$' + amt.toFixed(2);
+    }
+
+    function toggleCurrency() {
+        currentCurrency = currentCurrency === 'USD' ? 'ZMW' : 'USD';
+        document.getElementById('alt-curr').innerText = currentCurrency === 'USD' ? 'ZMW' : 'USD';
+        render();
+        updateUI();
+    }
+
+    function render() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = products.map(p => `
+            <div class="card">
+                <img src="${p.img}" alt="${p.name}">
+                <h3>${p.name}</h3>
+                <div class="price-tag">${formatPrice(p.price)}</div>
+                <button class="btn btn-primary" onclick="addToCart(${p.id})">Add to Bag</button>
+            </div>
+        `).join('');
+    }
+
+    function addToCart(id) {
+        const item = products.find(p => p.id === id);
+        cart.push(item);
+        updateUI();
+        document.getElementById('sidebar').classList.add('open');
+    }
+
+    function updateUI() {
+        document.getElementById('count').innerText = cart.length;
+        const total = cart.reduce((sum, i) => sum + i.price, 0);
+        document.getElementById('cart-total').innerText = formatPrice(total);
+        
+        const list = document.getElementById('cartItems');
+        list.innerHTML = cart.map(i => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem">
+                <span>${i.name}</span>
+                <span>${formatPrice(i.price)}</span>
+            </div>
+        `).join('');
+    }
+
+    function toggleCart() { document.getElementById('sidebar').classList.toggle('open'); }
+
+    function setNet(net, el) {
+        selectedNet = net;
+        document.querySelectorAll('.net-opt').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function processPayment() {
+        const phone = document.getElementById('momo-phone').value;
+        const total = cart.reduce((sum, i) => sum + i.price, 0);
+        const kwachaAmount = (total * rate).toLocaleString();
+
+        if (!selectedNet || phone.length < 10) {
+            alert("Please select a network and enter your phone number.");
+            return;
+        }
+        alert(`Payment Request Initiated!\n\nNetwork: ${selectedNet}\nAmount: K${kwachaAmount}\nTarget: ${phone}\n\nPlease check your phone for the PIN prompt.`);
+    }
+
+    render();
+</script>
+
+</body>
+</html>
