@@ -3,244 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartGear | Burma Luwingu Branch</title>
+    <title>SmartGear | Burma Luwingu</title>
     <style>
-        :root {
-            --primary: #00f2ff;
-            --bg: #0d0d0f;
-            --surface: #1a1a1e;
-            --text: #ffffff;
-            --accent: #ffcc00;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Greeting Bar */
-        #greeting-bar {
-            background: linear-gradient(90deg, #00f2ff, #0072ff);
-            color: #000;
-            padding: 8px 5%;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        header {
-            background: rgba(13, 13, 15, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 5%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #222;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: #fff; }
-        .logo span { color: var(--primary); }
-
-        /* Store Ad Section */
-        .store-ad {
-            background: #111;
-            margin: 20px 5%;
-            padding: 30px;
-            border-radius: 20px;
-            border: 2px solid var(--primary);
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
-        }
-
-        .store-ad h2 { margin: 0; color: var(--primary); font-size: 1.8rem; }
-        .store-ad p { font-size: 1.1rem; color: #ccc; margin: 10px 0; }
-
-        .container { flex: 1; padding: 20px 5%; max-width: 1200px; margin: 0 auto; width: 90%; }
+        :root { --primary: #00f2ff; --bg: #0d0d0f; --surface: #1a1a1e; --text: #ffffff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
         
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 25px;
-        }
+        /* Product Grid */
+        .container { padding: 40px 5%; max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        
+        .card { background: var(--surface); border-radius: 20px; padding: 15px; border: 1px solid #222; text-align: center; }
+        .card img { width: 100%; height: 220px; object-fit: cover; border-radius: 15px; cursor: pointer; }
 
-        .card {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid #222;
-            transition: 0.3s;
-        }
+        /* Modal / Gallery */
+        .modal { display: none; position: fixed; z-index: 5000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #111; padding: 20px; border-radius: 20px; max-width: 500px; width: 90%; position: relative; }
+        
+        .gallery-main { width: 100%; height: 300px; object-fit: contain; border-radius: 10px; }
+        .thumbnails { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid transparent; }
+        .thumb.active { border-color: var(--primary); }
 
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        .stock-tag { font-size: 0.75rem; color: #ff4444; font-weight: bold; margin-bottom: 5px; display: block; }
-
-        .price-tag { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
-
-        .btn {
-            width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s;
-        }
-
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-primary { background: var(--primary); color: #000; }
-        .btn-disabled { background: #333; color: #666; cursor: not-allowed; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 2rem; cursor: pointer; }
 
-        /* Sidebar Cart */
-        #sidebar {
-            position: fixed; right: -100%; top: 0; width: 360px; height: 100%;
-            background: #111; z-index: 2000; transition: 0.4s; padding: 30px; box-sizing: border-box;
-        }
-
-        #sidebar.open { right: 0; }
-
-        footer {
-            background: #000; padding: 40px 5%; text-align: center; border-top: 1px solid #222; color: #666; font-size: 0.9rem;
-        }
-
-        .momo-badge { background: #ffcc00; color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 0.7rem; }
+        footer { background: #000; padding: 40px 5%; text-align: center; border-top: 1px solid #222; color: #666; font-size: 0.9rem; line-height: 1.6; }
     </style>
 </head>
 <body>
 
-<div id="greeting-bar">Welcome to SmartGear!</div>
-
-<header>
-    <a href="#" class="logo">Smart<span>Gear</span></a>
-    <div style="display:flex; gap:15px; align-items:center;">
-        <button onclick="toggleCurrency()" style="background:none; border:1px solid var(--primary); color:var(--primary); cursor:pointer; border-radius:10px; padding:5px 10px; font-size:0.8rem;">
-            Switch to <span id="alt-curr">ZMW</span>
-        </button>
-        <div onclick="toggleCart()" style="cursor:pointer; font-weight:bold;">🛒 Bag (<span id="count">0</span>)</div>
-    </div>
+<header style="padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222;">
+    <div style="font-weight: 800; font-size: 1.5rem;">Smart<span>Gear</span></div>
+    <div id="greeting" style="font-size: 0.9rem; color: var(--primary);">Welcome!</div>
 </header>
-
-<section class="store-ad">
-    <h2>Visit Us in Person! 📍</h2>
-    <p>Our flagship store is located at <strong>Burma, Luwingu</strong>.</p>
-    <p style="font-size: 0.9rem;">Experience premium smart accessories and on-site technical support.</p>
-</section>
 
 <div class="container">
     <div class="grid" id="productGrid"></div>
 </div>
 
-<div id="sidebar">
-    <span style="cursor:pointer; float:right; font-size: 1.5rem;" onclick="toggleCart()">&times;</span>
-    <h2>Your Bag</h2>
-    <div id="cartItems"></div>
-    <hr style="border-color: #333; margin: 20px 0;">
-    
-    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; color: var(--primary);">
-        <span>Total Due</span>
-        <span id="cart-total">$0.00</span>
+<div class="modal" id="productModal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <img id="mainView" class="gallery-main" src="">
+        <h2 id="modalTitle" style="margin: 15px 0 5px;"></h2>
+        <div id="modalPrice" style="color: var(--primary); font-weight: bold; margin-bottom: 15px;"></div>
+        <div class="thumbnails" id="thumbContainer"></div>
+        <button class="btn btn-primary" onclick="addToCartFromModal()">Add to Bag</button>
     </div>
-
-    <div style="background: #1a1a1e; padding: 15px; border-radius: 12px; margin-top: 20px;">
-        <p style="margin:0 0 10px 0; font-size: 0.8rem;">Pay via <span class="momo-badge">MTN / AIRTEL MoMo</span></p>
-        <input type="text" id="momo-phone" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid #444; border-radius:8px; box-sizing:border-box;" placeholder="Enter Phone (09x...)">
-    </div>
-
-    <button class="btn btn-primary" style="margin-top: 20px;" onclick="processPayment()">Checkout Now</button>
 </div>
 
-<footer style="background: #000; padding: 40px 5%; text-align: center; border-top: 1px solid #222; color: #666; font-size: 0.9rem; line-height: 1.6;">
+<a href="https://wa.me/260978319400" style="position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; padding: 15px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; z-index: 4000;">
+    Chat with Busiku 💬
+</a>
+
+<footer>
     &copy; 2026 Designed and Developed by <strong>Busiku Kapikanya</strong> | 
-    <a href="https://wa.me/260978319400" target="_blank" style="color: #25D366; text-decoration: none; font-weight: bold;">
-        WhatsApp: +260978319400 💬
-    </a>
+    <a href="https://wa.me/260978319400" target="_blank" style="color: #25D366; text-decoration: none;">WhatsApp: +260978319400</a>
     <br>
-    <span style="color: var(--primary); font-weight: 500;">Burma, Luwingu District - Zambia</span>
+    <span style="color: var(--primary);">Burma, Luwingu District - Zambia</span>
 </footer>
 
 <script>
     const products = [
-        { id: 1, name: 'Nano 65W Fast Charger', price: 45, stock: 12, img: 'https://images.unsplash.com/photo-1619441207978-3d326c46e2c9?w=400' },
-        { id: 2, name: 'Smart Noise Buds Pro', price: 120, stock: 5, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400' },
-        { id: 3, name: 'Armor Carbon Case', price: 25, stock: 20, img: 'https://images.unsplash.com/photo-1603313011101-31c726a54861?w=400' },
-        { id: 4, name: 'Mag-Safe PowerBank', price: 65, stock: 3, img: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400' }
+        { 
+            id: 1, 
+            name: 'Nano 65W Fast Charger', 
+            price: 45, 
+            images: [
+                'https://raw.githubusercontent.com/User/Repo/main/img1.jpg',
+                'https://raw.githubusercontent.com/User/Repo/main/img1_alt.jpg'
+            ]
+        },
+        { 
+            id: 2, 
+            name: 'Smart Buds Pro', 
+            price: 120, 
+            images: [
+                'https://raw.githubusercontent.com/User/Repo/main/buds1.jpg',
+                'https://raw.githubusercontent.com/User/Repo/main/buds2.jpg'
+            ]
+        }
     ];
 
-    let cart = [];
-    let currentCurrency = 'USD';
-    const rate = 27.2; // Current ZMW rate
-
-    function updateGreeting() {
-        const hour = new Date().getHours();
-        const bar = document.getElementById('greeting-bar');
-        if (hour < 12) bar.innerText = "Good Morning! Welcome to SmartGear Luwingu.";
-        else if (hour < 18) bar.innerText = "Good Afternoon! Shop the best gear in Burma Luwingu.";
-        else bar.innerText = "Good Evening! Night deals are live at SmartGear.";
-    }
-
-    function formatPrice(amt) {
-        return currentCurrency === 'ZMW' ? 'K' + (amt * rate).toLocaleString() : '$' + amt.toFixed(2);
-    }
-
-    function toggleCurrency() {
-        currentCurrency = currentCurrency === 'USD' ? 'ZMW' : 'USD';
-        document.getElementById('alt-curr').innerText = currentCurrency === 'USD' ? 'ZMW' : 'USD';
-        render();
-        updateUI();
-    }
+    let currentProductId = null;
 
     function render() {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = products.map(p => `
             <div class="card">
-                <img src="${p.img}" alt="${p.name}" style="width:100%; border-radius:12px; margin-bottom:15px;">
-                <span class="stock-tag">${p.stock > 0 ? p.stock + ' Items Left' : 'Out of Stock'}</span>
-                <h3 style="margin:5px 0;">${p.name}</h3>
-                <div class="price-tag">${formatPrice(p.price)}</div>
-                <button class="btn ${p.stock > 0 ? 'btn-primary' : 'btn-disabled'}" 
-                        onclick="${p.stock > 0 ? `addToCart(${p.id})` : ''}">
-                    ${p.stock > 0 ? 'Add to Bag' : 'Sold Out'}
-                </button>
+                <img src="${p.images[0]}" onclick="openModal(${p.id})">
+                <h3>${p.name}</h3>
+                <div style="color: var(--primary); font-weight:bold;">$${p.price}</div>
+                <p style="font-size: 0.8rem; color: #666;">Click image for more photos</p>
+                <button class="btn btn-primary" onclick="openModal(${p.id})">View Details</button>
             </div>
         `).join('');
     }
 
-    function addToCart(id) {
-        const product = products.find(p => p.id === id);
-        if (product.stock > 0) {
-            product.stock--;
-            cart.push({...product});
-            updateUI();
-            render();
-            document.getElementById('sidebar').classList.add('open');
-        }
-    }
-
-    function updateUI() {
-        document.getElementById('count').innerText = cart.length;
-        const total = cart.reduce((sum, i) => sum + i.price, 0);
-        document.getElementById('cart-total').innerText = formatPrice(total);
+    function openModal(id) {
+        const p = products.find(prod => prod.id === id);
+        currentProductId = id;
+        document.getElementById('mainView').src = p.images[0];
+        document.getElementById('modalTitle').innerText = p.name;
+        document.getElementById('modalPrice').innerText = `$${p.price}`;
         
-        document.getElementById('cartItems').innerHTML = cart.map((i, index) => `
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem">
-                <span>${i.name}</span>
-                <span>${formatPrice(i.price)}</span>
-            </div>
+        const thumbs = document.getElementById('thumbContainer');
+        thumbs.innerHTML = p.images.map((img, idx) => `
+            <img src="${img}" class="thumb ${idx === 0 ? 'active' : ''}" onclick="changeView('${img}', this)">
         `).join('');
+        
+        document.getElementById('productModal').classList.add('active');
     }
 
-    function toggleCart() { document.getElementById('sidebar').classList.toggle('open'); }
-    
-    function processPayment() {
-        const phone = document.getElementById('momo-phone').value;
-        if(phone.length < 10) return alert("Please enter a valid MoMo number.");
-        alert("Success! A payment prompt has been sent to your phone. Thank you for shopping with SmartGear Burma Luwingu!");
+    function changeView(src, el) {
+        document.getElementById('mainView').src = src;
+        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
     }
 
-    updateGreeting();
+    function closeModal() {
+        document.getElementById('productModal').classList.remove('active');
+    }
+
+    function addToCartFromModal() {
+        alert("Added to bag! Proceeding to MoMo payment...");
+        closeModal();
+    }
+
     render();
 </script>
-
 </body>
 </html>
