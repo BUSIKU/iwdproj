@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartGear | Premium Zambian Tech Store</title>
+    <title>SmartGear | Burma Luwingu Branch</title>
     <style>
         :root {
             --primary: #00f2ff;
@@ -23,6 +23,16 @@
             min-height: 100vh;
         }
 
+        /* Greeting Bar */
+        #greeting-bar {
+            background: linear-gradient(90deg, #00f2ff, #0072ff);
+            color: #000;
+            padding: 8px 5%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
         header {
             background: rgba(13, 13, 15, 0.95);
             backdrop-filter: blur(10px);
@@ -39,25 +49,19 @@
         .logo { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: #fff; }
         .logo span { color: var(--primary); }
 
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-
-        .currency-btn {
-            background: #222;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 5px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .cart-trigger {
-            background: #222;
-            padding: 8px 15px;
+        /* Store Ad Section */
+        .store-ad {
+            background: #111;
+            margin: 20px 5%;
+            padding: 30px;
             border-radius: 20px;
-            cursor: pointer;
+            border: 2px solid var(--primary);
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
         }
+
+        .store-ad h2 { margin: 0; color: var(--primary); font-size: 1.8rem; }
+        .store-ad p { font-size: 1.1rem; color: #ccc; margin: 10px 0; }
 
         .container { flex: 1; padding: 20px 5%; max-width: 1200px; margin: 0 auto; width: 90%; }
         
@@ -77,17 +81,16 @@
 
         .card:hover { border-color: var(--primary); transform: translateY(-5px); }
 
-        .card img {
-            width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px;
-        }
+        .stock-tag { font-size: 0.75rem; color: #ff4444; font-weight: bold; margin-bottom: 5px; display: block; }
 
-        .price-tag { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
+        .price-tag { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin: 10px 0; }
 
         .btn {
-            width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer;
+            width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s;
         }
 
         .btn-primary { background: var(--primary); color: #000; }
+        .btn-disabled { background: #333; color: #666; cursor: not-allowed; }
 
         /* Sidebar Cart */
         #sidebar {
@@ -97,79 +100,83 @@
 
         #sidebar.open { right: 0; }
 
-        .momo-box { background: #1a1a1e; border: 1px solid #333; border-radius: 15px; padding: 15px; margin-top: 20px; }
-
-        .net-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-
-        .net-opt { text-align: center; font-size: 0.7rem; cursor: pointer; padding: 10px; border: 1px solid #333; border-radius: 10px; }
-
-        .net-opt.active { border-color: var(--accent); color: var(--accent); }
-
         footer {
-            background: #000; padding: 30px 5%; text-align: center; border-top: 1px solid #222; color: #666; font-size: 0.9rem;
+            background: #000; padding: 40px 5%; text-align: center; border-top: 1px solid #222; color: #666; font-size: 0.9rem;
         }
+
+        .momo-badge { background: #ffcc00; color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
+<div id="greeting-bar">Welcome to SmartGear!</div>
+
 <header>
     <a href="#" class="logo">Smart<span>Gear</span></a>
-    <div class="header-actions">
-        <button class="currency-btn" onclick="toggleCurrency()">Switch to <span id="alt-curr">ZMW</span></button>
-        <div class="cart-trigger" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
+    <div style="display:flex; gap:15px; align-items:center;">
+        <button onclick="toggleCurrency()" style="background:none; border:1px solid var(--primary); color:var(--primary); cursor:pointer; border-radius:10px; padding:5px 10px; font-size:0.8rem;">
+            Switch to <span id="alt-curr">ZMW</span>
+        </button>
+        <div onclick="toggleCart()" style="cursor:pointer; font-weight:bold;">🛒 Bag (<span id="count">0</span>)</div>
     </div>
 </header>
+
+<section class="store-ad">
+    <h2>Visit Us in Person! 📍</h2>
+    <p>Our flagship store is located at <strong>Burma, Luwingu</strong>.</p>
+    <p style="font-size: 0.9rem;">Experience premium smart accessories and on-site technical support.</p>
+</section>
 
 <div class="container">
     <div class="grid" id="productGrid"></div>
 </div>
 
 <div id="sidebar">
-    <span style="cursor:pointer; float:right;" onclick="toggleCart()">&times; Close</span>
+    <span style="cursor:pointer; float:right; font-size: 1.5rem;" onclick="toggleCart()">&times;</span>
     <h2>Your Bag</h2>
     <div id="cartItems"></div>
     <hr style="border-color: #333; margin: 20px 0;">
     
     <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; color: var(--primary);">
-        <span>Total</span>
+        <span>Total Due</span>
         <span id="cart-total">$0.00</span>
     </div>
 
-    <div class="momo-box">
-        <p style="margin:0; font-size: 0.8rem;">Mobile Money Payment (Zambia)</p>
-        <div class="net-grid">
-            <div class="net-opt" onclick="setNet('MTN', this)">MTN</div>
-            <div class="net-opt" onclick="setNet('Airtel', this)">Airtel</div>
-            <div class="net-opt" onclick="setNet('Zamtel', this)">Zamtel</div>
-        </div>
-        <input type="text" id="momo-phone" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid #444; border-radius:8px;" placeholder="09x xxxxxxx">
+    <div style="background: #1a1a1e; padding: 15px; border-radius: 12px; margin-top: 20px;">
+        <p style="margin:0 0 10px 0; font-size: 0.8rem;">Pay via <span class="momo-badge">MTN / AIRTEL MoMo</span></p>
+        <input type="text" id="momo-phone" style="width:100%; padding:10px; background:#000; color:#fff; border:1px solid #444; border-radius:8px; box-sizing:border-box;" placeholder="Enter Phone (09x...)">
     </div>
 
-    <button class="btn btn-primary" style="margin-top: 20px;" onclick="processPayment()">Confirm & Pay</button>
+    <button class="btn btn-primary" style="margin-top: 20px;" onclick="processPayment()">Checkout Now</button>
 </div>
 
 <footer>
-    &copy; 2026 Designed and Developed by <strong>Busiku Kapikanya</strong> | SIN: 1810198443
+    &copy; 2026 Designed and Developed by <strong>Busiku Kapikanya</strong> | SIN: 1810198443<br>
+    <span style="color: var(--primary);">Burma, Luwingu District - Zambia</span>
 </footer>
 
 <script>
     const products = [
-        { id: 1, name: 'Nano 65W Fast Charger', price: 45, img: 'https://images.unsplash.com/photo-1619441207978-3d326c46e2c9?w=400' },
-        { id: 2, name: 'Smart Noise Buds Pro', price: 120, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400' },
-        { id: 3, name: 'Armor Carbon Case', price: 25, img: 'https://images.unsplash.com/photo-1603313011101-31c726a54861?w=400' },
-        { id: 4, name: 'Mag-Safe PowerBank', price: 65, img: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400' }
+        { id: 1, name: 'Nano 65W Fast Charger', price: 45, stock: 12, img: 'https://images.unsplash.com/photo-1619441207978-3d326c46e2c9?w=400' },
+        { id: 2, name: 'Smart Noise Buds Pro', price: 120, stock: 5, img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400' },
+        { id: 3, name: 'Armor Carbon Case', price: 25, stock: 20, img: 'https://images.unsplash.com/photo-1603313011101-31c726a54861?w=400' },
+        { id: 4, name: 'Mag-Safe PowerBank', price: 65, stock: 3, img: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400' }
     ];
 
     let cart = [];
-    let currentCurrency = 'USD'; // or 'ZMW'
-    const rate = 26.8; 
-    let selectedNet = '';
+    let currentCurrency = 'USD';
+    const rate = 27.2; // Current ZMW rate
+
+    function updateGreeting() {
+        const hour = new Date().getHours();
+        const bar = document.getElementById('greeting-bar');
+        if (hour < 12) bar.innerText = "Good Morning! Welcome to SmartGear Luwingu.";
+        else if (hour < 18) bar.innerText = "Good Afternoon! Shop the best gear in Burma Luwingu.";
+        else bar.innerText = "Good Evening! Night deals are live at SmartGear.";
+    }
 
     function formatPrice(amt) {
-        if (currentCurrency === 'ZMW') {
-            return 'K' + (amt * rate).toLocaleString(undefined, {minimumFractionDigits: 2});
-        }
-        return '$' + amt.toFixed(2);
+        return currentCurrency === 'ZMW' ? 'K' + (amt * rate).toLocaleString() : '$' + amt.toFixed(2);
     }
 
     function toggleCurrency() {
@@ -183,19 +190,27 @@
         const grid = document.getElementById('productGrid');
         grid.innerHTML = products.map(p => `
             <div class="card">
-                <img src="${p.img}" alt="${p.name}">
-                <h3>${p.name}</h3>
+                <img src="${p.img}" alt="${p.name}" style="width:100%; border-radius:12px; margin-bottom:15px;">
+                <span class="stock-tag">${p.stock > 0 ? p.stock + ' Items Left' : 'Out of Stock'}</span>
+                <h3 style="margin:5px 0;">${p.name}</h3>
                 <div class="price-tag">${formatPrice(p.price)}</div>
-                <button class="btn btn-primary" onclick="addToCart(${p.id})">Add to Bag</button>
+                <button class="btn ${p.stock > 0 ? 'btn-primary' : 'btn-disabled'}" 
+                        onclick="${p.stock > 0 ? `addToCart(${p.id})` : ''}">
+                    ${p.stock > 0 ? 'Add to Bag' : 'Sold Out'}
+                </button>
             </div>
         `).join('');
     }
 
     function addToCart(id) {
-        const item = products.find(p => p.id === id);
-        cart.push(item);
-        updateUI();
-        document.getElementById('sidebar').classList.add('open');
+        const product = products.find(p => p.id === id);
+        if (product.stock > 0) {
+            product.stock--;
+            cart.push({...product});
+            updateUI();
+            render();
+            document.getElementById('sidebar').classList.add('open');
+        }
     }
 
     function updateUI() {
@@ -203,9 +218,8 @@
         const total = cart.reduce((sum, i) => sum + i.price, 0);
         document.getElementById('cart-total').innerText = formatPrice(total);
         
-        const list = document.getElementById('cartItems');
-        list.innerHTML = cart.map(i => `
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem">
+        document.getElementById('cartItems').innerHTML = cart.map((i, index) => `
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem">
                 <span>${i.name}</span>
                 <span>${formatPrice(i.price)}</span>
             </div>
@@ -213,25 +227,14 @@
     }
 
     function toggleCart() { document.getElementById('sidebar').classList.toggle('open'); }
-
-    function setNet(net, el) {
-        selectedNet = net;
-        document.querySelectorAll('.net-opt').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-
+    
     function processPayment() {
         const phone = document.getElementById('momo-phone').value;
-        const total = cart.reduce((sum, i) => sum + i.price, 0);
-        const kwachaAmount = (total * rate).toLocaleString();
-
-        if (!selectedNet || phone.length < 10) {
-            alert("Please select a network and enter your phone number.");
-            return;
-        }
-        alert(`Payment Request Initiated!\n\nNetwork: ${selectedNet}\nAmount: K${kwachaAmount}\nTarget: ${phone}\n\nPlease check your phone for the PIN prompt.`);
+        if(phone.length < 10) return alert("Please enter a valid MoMo number.");
+        alert("Success! A payment prompt has been sent to your phone. Thank you for shopping with SmartGear Burma Luwingu!");
     }
 
+    updateGreeting();
     render();
 </script>
 
